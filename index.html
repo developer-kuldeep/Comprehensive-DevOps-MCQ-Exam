@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meander Software | DevOps Comprehensive MCQ Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #0a0e1a;
+    --bg-card: #111827;
+    --bg-card2: #1a2233;
+    --border: #1e2d45;
+    --accent: #3b82f6;
+    --accent2: #8b5cf6;
+    --green: #10b981;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --text-dim: #4a5568;
+    --radius: 14px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ---- LANDING SCREEN ---- */
+  #landing {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 40px 20px;
+    background: radial-gradient(ellipse at 20% 20%, rgba(59,130,246,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.10) 0%, transparent 60%), var(--bg-dark);
+  }
+  #landing .logo { font-size: 3rem; margin-bottom: 16px; }
+  #landing h1 { font-size: 2.4rem; font-weight: 800; text-align: center; background: linear-gradient(135deg,#60a5fa,#a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
+  #landing p.subtitle { color: var(--text-muted); font-size: 1.1rem; text-align: center; margin-bottom: 36px; max-width: 540px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; width: 100%; max-width: 680px; }
+  .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 16px; text-align: center; }
+  .stat-card .num { font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .stat-card .label { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .modules-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 40px; width: 100%; max-width: 680px; }
+  .module-pill { background: var(--bg-card2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; }
+  .module-pill .icon { font-size: 1.5rem; }
+  .module-pill .info .title { font-weight: 600; font-size: 0.95rem; }
+  .module-pill .info .sub { font-size: 0.75rem; color: var(--text-muted); }
+  #startBtn {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white;
+    border: none; border-radius: 12px; padding: 18px 56px; font-size: 1.15rem;
+    font-weight: 700; cursor: pointer; letter-spacing: 0.03em;
+    box-shadow: 0 0 0 0 rgba(59,130,246,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  #startBtn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59,130,246,0.45); }
+
+  /* ---- EXAM SCREEN ---- */
+  #exam { display: none; padding: 0; }
+  .exam-header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,14,26,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .exam-header .brand { font-weight: 700; color: var(--accent); font-size: 1rem; }
+  .progress-section { display: flex; align-items: center; gap: 16px; flex: 1; margin: 0 24px; }
+  .progress-bar-wrap { flex: 1; background: var(--border); border-radius: 999px; height: 8px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 999px; transition: width 0.4s ease; width: 0%; }
+  .progress-text { font-size: 0.82rem; color: var(--text-muted); white-space: nowrap; }
+  .timer-box {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 16px; font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 600;
+    color: var(--green); min-width: 80px; text-align: center;
+  }
+  .timer-box.warning { color: var(--yellow); }
+  .timer-box.danger { color: var(--red); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.6; } }
+
+  .exam-body { max-width: 820px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* Module badge */
+  .module-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.1));
+    border: 1px solid rgba(59,130,246,0.3); border-radius: 999px;
+    padding: 6px 16px; font-size: 0.8rem; font-weight: 600; color: #93c5fd;
+    margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.07em;
+  }
+  .q-number { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 500; }
+  .q-text { font-size: 1.2rem; font-weight: 600; color: var(--text); margin-bottom: 28px; line-height: 1.5; }
+  .q-code { font-family: 'JetBrains Mono', monospace; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 14px 18px; margin: -10px 0 20px; font-size: 0.9rem; color: #e6edf3; display: block; }
+
+  .options { display: flex; flex-direction: column; gap: 14px; }
+  .option {
+    background: var(--bg-card); border: 2px solid var(--border); border-radius: var(--radius);
+    padding: 18px 22px; cursor: pointer; display: flex; align-items: flex-start; gap: 16px;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  }
+  .option:hover:not(.answered) { border-color: var(--accent); background: rgba(59,130,246,0.05); transform: translateX(4px); }
+  .option .opt-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 600;
+    background: var(--border); color: var(--text-muted); border-radius: 6px;
+    padding: 3px 10px; min-width: 36px; text-align: center; flex-shrink: 0;
+    transition: background 0.2s, color 0.2s;
+  }
+  .option .opt-text { font-size: 0.97rem; line-height: 1.5; }
+  .option.correct { border-color: var(--green) !important; background: rgba(16,185,129,0.08) !important; }
+  .option.correct .opt-label { background: var(--green); color: #fff; }
+  .option.wrong { border-color: var(--red) !important; background: rgba(239,68,68,0.08) !important; }
+  .option.wrong .opt-label { background: var(--red); color: #fff; }
+  .option.skipped { border-color: #4a5568 !important; opacity: 0.6; }
+
+  .explanation {
+    display: none; margin-top: 20px;
+    background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.25);
+    border-radius: 10px; padding: 18px 20px;
+  }
+  .explanation.wrong-exp { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.2); }
+  .explanation .exp-head { font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+  .explanation .exp-head.correct-head { color: var(--green); }
+  .explanation .exp-head.wrong-head { color: var(--red); }
+  .explanation p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+  .q-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; }
+  .nav-btn {
+    background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
+    border-radius: 10px; padding: 12px 24px; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: background 0.15s, border-color 0.15s;
+  }
+  .nav-btn:hover { background: var(--bg-card2); border-color: var(--accent); }
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .submit-btn {
+    background: linear-gradient(135deg, #10b981, #3b82f6); color: white; border: none;
+    border-radius: 10px; padding: 12px 28px; font-size: 0.9rem; font-weight: 700;
+    cursor: pointer; display: none; transition: transform 0.15s;
+  }
+  .submit-btn:hover { transform: translateY(-2px); }
+
+  /* ---- RESULTS SCREEN ---- */
+  #results { display: none; padding: 60px 20px; max-width: 880px; margin: 0 auto; }
+  .result-hero { text-align: center; margin-bottom: 48px; }
+  .score-ring-wrap { display: inline-block; position: relative; margin-bottom: 24px; }
+  .score-circle { width: 160px; height: 160px; }
+  .score-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+  .score-pct { font-size: 2.2rem; font-weight: 800; }
+  .score-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+  .result-hero h2 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+  .result-hero p { color: var(--text-muted); font-size: 1rem; }
+  .result-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 40px; }
+  .result-stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; }
+  .result-stat .num { font-size: 2rem; font-weight: 800; }
+  .result-stat .num.green { color: var(--green); }
+  .result-stat .num.red { color: var(--red); }
+  .result-stat .num.yellow { color: var(--yellow); }
+  .result-stat .num.blue { color: var(--accent); }
+  .result-stat .lbl { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .module-results { margin-bottom: 40px; }
+  .module-results h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-size: 0.85rem; }
+  .mod-result-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .mod-result-name { width: 220px; font-size: 0.9rem; font-weight: 500; flex-shrink: 0; }
+  .mod-result-bar-wrap { flex: 1; background: var(--border); border-radius: 999px; height: 10px; overflow: hidden; }
+  .mod-result-bar { height: 100%; border-radius: 999px; transition: width 1s ease; }
+  .mod-result-score { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+
+  .review-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 20px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-size: 0.85rem; }
+  .review-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; }
+  .review-item.r-correct { border-left: 4px solid var(--green); }
+  .review-item.r-wrong { border-left: 4px solid var(--red); }
+  .review-q { font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
+  .review-row { display: flex; gap: 8px; font-size: 0.82rem; margin-bottom: 4px; }
+  .review-row .tag { padding: 2px 10px; border-radius: 6px; font-weight: 600; font-size: 0.75rem; }
+  .tag-your { background: rgba(239,68,68,0.15); color: var(--red); }
+  .tag-correct-ans { background: rgba(16,185,129,0.15); color: var(--green); }
+  .tag-good { background: rgba(16,185,129,0.15); color: var(--green); }
+  .review-exp { font-size: 0.82rem; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+  .result-actions { display: flex; gap: 16px; justify-content: center; margin-top: 40px; flex-wrap: wrap; }
+  .action-btn { padding: 14px 32px; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; border: none; transition: transform 0.15s; }
+  .action-btn:hover { transform: translateY(-2px); }
+  .action-btn.primary { background: linear-gradient(135deg,#3b82f6,#8b5cf6); color: white; }
+  .action-btn.secondary { background: var(--bg-card); border: 1px solid var(--border); color: var(--text); }
+  .watermark { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-45deg); font-size: 80px; font-weight: 900; color: rgba(150,150,150,0.04); z-index: -1; pointer-events: none; user-select: none; white-space: nowrap; }
+
+  /* Q-grid navigator */
+  .q-grid-wrap { background: var(--bg-card2); border-radius: var(--radius); padding: 16px; margin-top: 32px; border: 1px solid var(--border); }
+  .q-grid-title { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; margin-bottom: 12px; }
+  .q-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .q-dot { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; cursor: pointer; border: 2px solid var(--border); color: var(--text-muted); background: var(--bg-dark); transition: all 0.15s; }
+  .q-dot.answered-c { background: rgba(16,185,129,0.15); border-color: var(--green); color: var(--green); }
+  .q-dot.answered-w { background: rgba(239,68,68,0.12); border-color: var(--red); color: var(--red); }
+  .q-dot.unanswered { background: var(--bg-card); }
+  .q-dot.current { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+
+  @media print {
+    #landing, #exam .exam-header, .q-nav, .q-grid-wrap { display: none !important; }
+    body { background: white; color: #111; }
+    .review-item { break-inside: avoid; }
+  }
+  @media (max-width: 600px) {
+    .stats-grid { grid-template-columns: repeat(2,1fr); }
+    .modules-list { grid-template-columns: 1fr; }
+    .result-stats { grid-template-columns: repeat(2,1fr); }
+    .mod-result-name { width: 140px; }
+    .exam-header { flex-wrap: wrap; gap: 8px; }
+    #landing h1 { font-size: 1.7rem; }
+  }
+</style>
+</head>
+<body>
+<div class="watermark">MEANDER</div>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="logo">🚀</div>
+  <h1>DevOps Comprehensive Exam</h1>
+  <p class="subtitle">Meander Software Pvt Ltd · DevOps Zero to Hero Program<br>50 Questions · 5 Modules · 60 Minutes</p>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="num">50</div><div class="label">Questions</div></div>
+    <div class="stat-card"><div class="num">5</div><div class="label">Modules</div></div>
+    <div class="stat-card"><div class="num">60</div><div class="label">Minutes</div></div>
+    <div class="stat-card"><div class="num">10</div><div class="label">Per Module</div></div>
+  </div>
+  <div class="modules-list">
+    <div class="module-pill"><div class="icon">🐧</div><div class="info"><div class="title">Linux Administration</div><div class="sub">10 questions — Classes 1–5</div></div></div>
+    <div class="module-pill"><div class="icon">🌐</div><div class="info"><div class="title">Computer Networking</div><div class="sub">10 questions — Classes 6–7</div></div></div>
+    <div class="module-pill"><div class="icon">🌿</div><div class="info"><div class="title">Git & GitHub</div><div class="sub">10 questions — Classes 8–9</div></div></div>
+    <div class="module-pill"><div class="icon">🐳</div><div class="info"><div class="title">Docker & Containerization</div><div class="sub">10 questions — Classes 10–12</div></div></div>
+    <div class="module-pill"><div class="icon">⚙️</div><div class="info"><div class="title">CI/CD Pipelines</div><div class="sub">10 questions — Class 13</div></div></div>
+  </div>
+  <button id="startBtn" onclick="startExam()">Begin Exam →</button>
+</div>
+
+<!-- EXAM -->
+<div id="exam">
+  <div class="exam-header">
+    <div class="brand">Meander DevOps Exam</div>
+    <div class="progress-section">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-text" id="progressText">0 / 50</div>
+    </div>
+    <div class="timer-box" id="timerBox">60:00</div>
+  </div>
+  <div class="exam-body">
+    <div class="module-badge" id="moduleBadge"></div>
+    <div class="q-number" id="qNumber"></div>
+    <div class="q-text" id="qText"></div>
+    <pre class="q-code" id="qCode" style="display:none"></pre>
+    <div class="options" id="optionsContainer"></div>
+    <div class="explanation" id="explanation">
+      <div class="exp-head" id="expHead"></div>
+      <p id="expText"></p>
+    </div>
+    <div class="q-nav">
+      <button class="nav-btn" id="prevBtn" onclick="changeQ(-1)" disabled>← Previous</button>
+      <button class="submit-btn" id="submitBtn" onclick="submitExam()">Submit Exam ✓</button>
+      <button class="nav-btn" id="nextBtn" onclick="changeQ(1)">Next →</button>
+    </div>
+    <div class="q-grid-wrap">
+      <div class="q-grid-title">Question Navigator</div>
+      <div class="q-grid" id="qGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results"></div>
+
+<script>
+const QUESTIONS = [
+  // ==================== MODULE 1: LINUX ADMINISTRATION ====================
+  {
+    module: "🐧 Linux Administration", moduleIdx: 0,
+    q: "What does the anatomy of this command mean: <code>ls -lah /var/log</code> — what is <code>-h</code> doing?",
+    code: null,
+    opts: ["A) It hides hidden files from the listing", "B) It displays file sizes in human-readable format (KB, MB, GB)", "C) It shows only files owned by the current user", "D) It sorts files by their last modification date"],
+    ans: 1,
+    exp: "The -h flag stands for Human-Readable. It converts raw byte sizes like 1048576 into readable formats like 1.0M. It must be combined with -l to work. Without -l, there are no size columns to format."
+  },
+  {
+    module: "🐧 Linux Administration", moduleIdx: 0,
+    q: "In Linux, what does the <code>pwd</code> command do?",
+    code: null,
+    opts: ["A) Print/show the working (current) directory's absolute path", "B) Change the directory to the parent folder", "C) Display the password policy for the current user", "D) List all files in the current directory"],
+    ans: 0,
+    exp: "PWD stands for Print Working Directory. It shows your exact current location in the file system as an absolute path (e.g., /home/ubuntu). It's one of the most-used commands in DevOps daily work."
+  },
+  {
+    module: "🐧 Linux Administration", moduleIdx: 0,
+    q: "What is the key difference between an Absolute Path and a Relative Path?",
+    code: null,
+    opts: ["A) Absolute paths use forward slashes, relative paths use backslashes", "B) Absolute paths always start with / (root), while relative paths start from your current location", "C) Absolute paths are shorter and faster to type", "D) Relative paths only work when you are in the /home directory"],
+    ans: 1,
+    exp: "An Absolute Path always starts with / (the root of the entire Linux filesystem) — like /var/log/nginx. A Relative Path starts from your current position — like 'cd nginx' instead of 'cd /var/log/nginx'. Think of it as: Absolute = full address, Relative = directions from where you are."
+  },
+  {
+    module: "🐧 Linux Administration", moduleIdx: 0,
+    q: "What does this command do?",
+    code: "echo \"DevOps is fun\" > notes.txt",
+    opts: ["A) Appends 'DevOps is fun' to notes.txt without deleting existing content", "B) Displays 'DevOps is fun' on screen only, without writing to any file", "C) Redirects 'DevOps is fun' into notes.txt, creating it if it doesn't exist (overwrites if it does)", "D) Creates notes.txt as an encrypted file with the text"],
+    ans: 2,
+    exp: "The > symbol is the redirection operator. It takes the output of echo and sends it into notes.txt. If notes.txt doesn't exist, Linux creates it automatically. If it does exist, it overwrites it entirely. To APPEND without overwriting, use >> instead."
+  },
+  {
+    module: "🐧 Linux Administration", moduleIdx: 0,
+    q: "You want to create a new Linux user named 'priya' WITH a home directory and bash shell. What is the correct command?",
+    code: null,
+    opts: ["A) sudo newuser priya -home -bash", "B) sudo useradd priya", "C) sudo useradd -m -s /bin/bash priya", "D) sudo adduser -m /bin/bash priya"],
+    ans: 2,
+    exp: "The correct command is: sudo useradd -m -s /bin/bash priya. The -m flag creates the home directory (/home/priya). The -s /bin/bash flag assigns the bash shell. Without -m, the user is created but has no home folder. The plain 'sudo useradd priya' creates a user without a home directory or proper shell."
+  },
+  {
+    module: "🐧 Linux Administration", moduleIdx: 0,
+    q: "Using the UGO model, what does this permission string mean?",
+    code: "-rw-r--r-- 1 rahul developers 1234 Jul 10 notes.txt",
+    opts: ["A) Owner=read+write, Group=read only, Others=read only", "B) Owner=all permissions, Group=read+execute, Others=read only", "C) Owner=read only, Group=read+write, Others=execute", "D) Owner=read+write+execute, Group=read only, Others=no access"],
+    ans: 0,
+    exp: "Breaking down -rw-r--r--: The first dash means it's a file. rw- = Owner has Read(4) + Write(2) = 6. r-- = Group has Read(4) only = 4. r-- = Others have Read(4) only = 4. So the numeric equivalent is 644, which is the default permission for regular files."
+  },
+  {
+    module: "🐧 Linux Administration", moduleIdx: 0,
+    q: "What is the correct command to give a script the numeric permission 755?",
+    code: null,
+    opts: ["A) chmod 755 script.sh", "B) chown 755 script.sh", "C) setperm 755 script.sh", "D) chmod -755 script.sh"],
+    ans: 0,
+    exp: "chmod (Change Mode) is the command for changing permissions. 755 means: Owner gets 7 (4+2+1 = rwx), Group gets 5 (4+0+1 = r-x), Others get 5 (4+0+1 = r-x). This is the standard permission for scripts you want people to run but not edit."
+  },
+  {
+    module: "🐧 Linux Administration", moduleIdx: 0,
+    q: "Why should you ALWAYS use <code>-aG</code> together when adding a user to a group?",
+    code: "sudo usermod -aG developers rahul",
+    opts: ["A) The -a flag makes the operation run faster", "B) The -a (Append) flag ensures existing groups are NOT removed. Without it, -G replaces all groups", "C) The -a flag stands for 'admin', giving the user admin privileges", "D) The -a flag is required on Ubuntu only"],
+    ans: 1,
+    exp: "If you run 'sudo usermod -G developers rahul' WITHOUT -a, it will REPLACE all of rahul's current secondary groups with just 'developers'. Using -aG means 'Append to Group list' — it adds the new group while keeping all existing ones intact. This is a critical flag to remember."
+  },
+  {
+    module: "🐧 Linux Administration", moduleIdx: 0,
+    q: "What is the Sticky Bit and why is it used on the /tmp directory?",
+    code: null,
+    opts: ["A) It makes files permanently read-only so they can't be changed", "B) It prevents the directory from being deleted by anyone", "C) It ensures only the file's owner (or root) can delete or rename their own files inside a shared directory", "D) It marks a file as executable by all users automatically"],
+    ans: 2,
+    exp: "The Sticky Bit (set with chmod +t /shared_folder) is a security feature for shared directories. On /tmp, multiple users can CREATE files, but they cannot DELETE or RENAME each other's files. You can verify it with 'ls -ld /tmp' and you'll see the 't' at the end: drwxrwxrwt."
+  },
+  {
+    module: "🐧 Linux Administration", moduleIdx: 0,
+    q: "You need to safely edit the sudoers file to give 'rahul' full admin powers. What is the safest approach?",
+    code: null,
+    opts: ["A) nano /etc/sudoers", "B) vim /etc/sudoers", "C) sudo visudo", "D) sudo edit /etc/sudoers"],
+    ans: 2,
+    exp: "Always use 'sudo visudo' to edit the sudoers file. visudo is special because it validates the file's syntax before saving. If you edit /etc/sudoers directly with nano or vim and make a typo, you can permanently break the entire sudo system, locking everyone — including root — out of admin access forever."
+  },
+
+  // ==================== MODULE 2: NETWORKING ====================
+  {
+    module: "🌐 Computer Networking", moduleIdx: 1,
+    q: "What is the range and primary use case for a MAN (Metropolitan Area Network)?",
+    code: null,
+    opts: ["A) Less than 10 meters — personal devices like Bluetooth", "B) Less than 2 km — home offices and buildings", "C) 5–50 km — connecting LANs across a city", "D) Greater than 50 km — connecting global branches"],
+    ans: 2,
+    exp: "A MAN (Metropolitan Area Network) covers a range of 5–50 km, making it ideal for connecting multiple LANs across a city. Real-world examples include city-wide public Wi-Fi networks and cable TV infrastructure. A PAN is < 10m, LAN is < 2km, and WAN is > 50km (like the Internet)."
+  },
+  {
+    module: "🌐 Computer Networking", moduleIdx: 1,
+    q: "What is the key difference between IPv4 and IPv6 addresses?",
+    code: null,
+    opts: ["A) IPv4 uses hexadecimal, IPv6 uses decimal format", "B) IPv4 is 32-bit (decimal), IPv6 is 128-bit (hexadecimal) with vastly more address space", "C) IPv6 is older and more stable than IPv4", "D) IPv4 supports unlimited addresses; IPv6 was created for speed"],
+    ans: 1,
+    exp: "IPv4 uses a 32-bit address in decimal format (e.g., 192.168.1.1), allowing only ~4.3 billion unique addresses — which are nearly exhausted. IPv6 uses a 128-bit address in hexadecimal (e.g., 2001:db8::1), supporting an astronomically larger number of addresses, designed for the modern scale of internet-connected devices."
+  },
+  {
+    module: "🌐 Computer Networking", moduleIdx: 1,
+    q: "In CIDR notation, what does a /24 subnet mean?",
+    code: "192.168.1.0/24",
+    opts: ["A) 24 devices can be connected to this network", "B) The first 24 bits are the Network ID, leaving 8 bits for hosts (256 total, 254 usable)", "C) The network has 24 MB of bandwidth allocated", "D) Only 24 IP addresses are reserved for internal use"],
+    ans: 1,
+    exp: "In CIDR notation, /24 means the first 24 bits are locked as the Network ID. Since IPv4 has 32 total bits, 32 - 24 = 8 bits remain for host addresses. 2^8 = 256 total addresses. Subtracting the Network Address (.0) and Broadcast Address (.255) gives 254 usable IP addresses for devices."
+  },
+  {
+    module: "🌐 Computer Networking", moduleIdx: 1,
+    q: "Which network topology is most fault-tolerant because it has multiple paths between any two nodes?",
+    code: null,
+    opts: ["A) Star Topology — central hub connects all", "B) Bus Topology — single shared cable", "C) Ring Topology — data passes in a circle", "D) Mesh Topology — every device has multiple paths to reach every other device"],
+    ans: 3,
+    exp: "Mesh Topology is the most redundant. Every device can reach every other device via multiple independent paths. If one link fails, traffic automatically reroutes. This is why it's used in cloud data centers. Star topology fails if the central hub breaks. Bus topology fails if the main cable is cut."
+  },
+  {
+    module: "🌐 Computer Networking", moduleIdx: 1,
+    q: "Why does real-time video streaming use UDP instead of TCP?",
+    code: null,
+    opts: ["A) UDP is more secure and encrypted than TCP", "B) UDP guarantees that no packets are ever lost during streaming", "C) UDP prioritizes low latency over reliability — lost packets are dropped, keeping video fluid", "D) UDP is only available on modern IPv6 networks"],
+    ans: 2,
+    exp: "TCP guarantees delivery but retransmits lost packets, causing buffering pauses which are unacceptable in live video. UDP drops lost packets and moves on immediately, keeping the stream fluid. A tiny moment of pixelation is better than a freeze. This is also why VoIP (voice calls) uses UDP — you'd rather have a brief glitch than a long pause."
+  },
+  {
+    module: "🌐 Computer Networking", moduleIdx: 1,
+    q: "What is the difference between a Static IP and a Dynamic IP address?",
+    code: null,
+    opts: ["A) A Static IP changes every time you connect; Dynamic IP stays the same forever", "B) Static IP is permanently assigned and never changes; Dynamic IP is assigned temporarily by DHCP and can change", "C) Static IP only works on LANs; Dynamic IP only works on WANs", "D) Dynamic IP provides more security than Static IP"],
+    ans: 1,
+    exp: "A Static IP is manually configured and never changes — critical for servers, databases, and network equipment that need a permanent, predictable address. A Dynamic IP is automatically assigned by a DHCP server and can change on reconnection. Servers use Static IPs so DNS can reliably point to them."
+  },
+  {
+    module: "🌐 Computer Networking", moduleIdx: 1,
+    q: "What does the <code>ss -tuln</code> command do in Linux networking?",
+    code: null,
+    opts: ["A) It sends a test packet to verify network connectivity", "B) It shows all active network sockets and which ports are currently listening on the server", "C) It displays the public IP address of the server", "D) It traces the route taken by packets to a destination"],
+    ans: 1,
+    exp: "ss (Socket Statistics) is the modern replacement for netstat. The flags: -t = TCP sockets, -u = UDP sockets, -l = only listening ports, -n = show numeric ports (not service names). It shows you exactly which ports your server has open and which processes are listening — essential for security auditing."
+  },
+  {
+    module: "🌐 Computer Networking", moduleIdx: 1,
+    q: "What is CIDR (Classless Inter-Domain Routing) designed to solve?",
+    code: null,
+    opts: ["A) Make networks run faster by compressing data packets", "B) Replace the IPv4 protocol with a newer addressing scheme", "C) Allow flexible subnetting to prevent IP address exhaustion and enable route aggregation", "D) Encrypt network traffic between routers"],
+    ans: 2,
+    exp: "Before CIDR, IP addresses were assigned in rigid classes (A, B, C), wasting millions of addresses. CIDR allows subnetting at any bit boundary (like /25, /26, /27), allocating exactly what is needed. It also enables Supernetting (route aggregation), combining many smaller routes into one, keeping global routing tables efficient."
+  },
+  {
+    module: "🌐 Computer Networking", moduleIdx: 1,
+    q: "Port 443 is reserved for which service?",
+    code: null,
+    opts: ["A) FTP (File Transfer Protocol)", "B) HTTP (unsecured web traffic)", "C) HTTPS (encrypted web traffic via SSL/TLS)", "D) SSH (Secure Shell)"],
+    ans: 2,
+    exp: "Well-known port assignments: Port 22 = SSH, Port 80 = HTTP, Port 443 = HTTPS, Port 3306 = MySQL, Port 5432 = PostgreSQL, Port 6379 = Redis, Port 27017 = MongoDB. Memorizing these is essential for firewall configuration and server troubleshooting in DevOps."
+  },
+  {
+    module: "🌐 Computer Networking", moduleIdx: 1,
+    q: "What is the purpose of the <code>traceroute</code> command?",
+    code: null,
+    opts: ["A) Display all files transferred over the network", "B) Show the sequence of hops (routers) that packets traverse to reach a destination", "C) Monitor CPU and memory usage on the server", "D) Test if port 80 is open on a remote server"],
+    ans: 1,
+    exp: "traceroute (or tracert on Windows) maps the path packets take from your machine to a destination, showing each hop (router) along the way with response times. It's invaluable for diagnosing network bottlenecks — if traffic is slow, traceroute reveals exactly where the delay is occurring on the network path."
+  },
+
+  // ==================== MODULE 3: GIT & GITHUB ====================
+  {
+    module: "🌿 Git & GitHub", moduleIdx: 2,
+    q: "What is the fundamental difference between Git and GitHub?",
+    code: null,
+    opts: ["A) Git is a cloud platform, GitHub is the local tool installed on your computer", "B) Git is a local Version Control System that tracks changes; GitHub is a cloud platform to store and share Git repositories", "C) Git and GitHub are the same — GitHub is just the official name for Git", "D) GitHub is an older version of Git that is being replaced"],
+    ans: 1,
+    exp: "Git is a tool that runs locally on your computer. It tracks every change you make to your code and maintains a full history. GitHub is a cloud-based platform where you can upload (push) your Git repositories for backup, collaboration, and CI/CD. You can use Git without GitHub, but you can't use GitHub without Git."
+  },
+  {
+    module: "🌿 Git & GitHub", moduleIdx: 2,
+    q: "What are the 3 stages of Git, in the correct order?",
+    code: null,
+    opts: ["A) Remote → Local → Staged", "B) Working Directory → Staging Area → Repository (Committed)", "C) Branch → Merge → Push", "D) Clone → Commit → Push"],
+    ans: 1,
+    exp: "Git has 3 stages: 1) Working Directory — where you edit files. 2) Staging Area (Index) — where you organize changes with 'git add' before committing. 3) Repository — where commits are permanently stored with 'git commit'. This 3-stage design lets you choose exactly which changes to include in a commit."
+  },
+  {
+    module: "🌿 Git & GitHub", moduleIdx: 2,
+    q: "What does <code>git stash</code> do?",
+    code: null,
+    opts: ["A) Permanently deletes uncommitted changes from your working directory", "B) Pushes the current branch directly to GitHub", "C) Temporarily saves uncommitted work so you can switch branches, to be reapplied later", "D) Creates a new branch with all uncommitted changes"],
+    ans: 2,
+    exp: "git stash is your 'temporary clipboard'. Scenario: You're working on a new feature when an urgent bug is reported on main. You're not ready to commit your feature code, but you can't switch branches with dirty changes. git stash saves all uncommitted work temporarily, lets you switch branches, fix the bug, and then run 'git stash pop' to restore your work exactly where you left off."
+  },
+  {
+    module: "🌿 Git & GitHub", moduleIdx: 2,
+    q: "What is a branch in Git and what is the golden rule about the <code>main</code> branch?",
+    code: null,
+    opts: ["A) A branch is a backup of the entire repository; main should always be worked on directly", "B) A branch is a parallel, independent line of development; NEVER write experimental or risky code directly on main", "C) A branch is a read-only snapshot; the main branch is for testing only", "D) A branch is a compressed archive of the repository"],
+    ans: 1,
+    exp: "A branch is an independent parallel universe of your codebase. The Golden Rule: the main (or master) branch should always contain production-ready, working code. For any new feature, experiment, or bug fix, create a new branch (e.g., 'feature/login-page'). Develop and test there. Only merge back into main when the code is reviewed and verified."
+  },
+  {
+    module: "🌿 Git & GitHub", moduleIdx: 2,
+    q: "What is the purpose of <code>.gitignore</code>?",
+    code: null,
+    opts: ["A) To list files that Git should delete from the repository", "B) To specify files and directories that Git should intentionally not track or commit", "C) To configure which users are allowed to push to the repository", "D) To define the merge strategy for the repository"],
+    ans: 1,
+    exp: ".gitignore tells Git which files to never track. Common entries include: node_modules/ (thousands of files), .env (secret keys — critical for security!), build/ and dist/ (compiled output). If you accidentally commit a .env file with passwords to GitHub, your credentials are exposed publicly — .gitignore prevents this."
+  },
+  {
+    module: "🌿 Git & GitHub", moduleIdx: 2,
+    q: "What is a Merge Conflict and when does it occur?",
+    code: null,
+    opts: ["A) It occurs when two developers push to different repositories", "B) It occurs when Git cannot automatically merge two branches because both modified the same lines of the same file differently", "C) It occurs when a commit message is too long", "D) It occurs when you try to push without pulling first"],
+    ans: 1,
+    exp: "A merge conflict happens when two branches changed the exact same line(s) of the same file — Git doesn't know which version to keep and asks YOU to decide. You'll see conflict markers in the file: <<<<<<< HEAD (your version), =======, >>>>>>> feature-branch (incoming version). You manually edit the file, resolve the conflict, then 'git add' and 'git commit' to complete the merge."
+  },
+  {
+    module: "🌿 Git & GitHub", moduleIdx: 2,
+    q: "What is the complete Git daily workflow in the correct order?",
+    code: null,
+    opts: ["A) commit → add → push → pull", "B) pull → (edit files) → status → add → commit → push", "C) push → commit → add → pull", "D) clone → push → commit → add"],
+    ans: 1,
+    exp: "The correct DevOps daily Git workflow: 1) git pull — get the latest code from GitHub. 2) Edit your files. 3) git status — see what changed. 4) git add . — stage your changes. 5) git commit -m 'message' — save to local history. 6) git push — upload to GitHub. Always pull before you start working to avoid conflicts!"
+  },
+  {
+    module: "🌿 Git & GitHub", moduleIdx: 2,
+    q: "What does <code>git log --oneline</code> display?",
+    code: null,
+    opts: ["A) A full diff of all changes made to every file", "B) A compact list of all commits with their short hash and commit message", "C) The current branches and their remote tracking status", "D) The list of contributors to the repository"],
+    ans: 1,
+    exp: "git log --oneline shows a compact commit history with a short 7-character hash and the commit message on a single line. This is the standard way to review what happened in a repository. To see full details of a specific commit, use 'git show <hash>'. To see a visual branch graph, use 'git log --oneline --graph --all'."
+  },
+  {
+    module: "🌿 Git & GitHub", moduleIdx: 2,
+    q: "You made a bad commit and want to undo it safely, keeping the changes in your working directory. Which command should you use?",
+    code: null,
+    opts: ["A) git reset --hard HEAD~1", "B) git revert HEAD", "C) git reset --soft HEAD~1", "D) git delete HEAD"],
+    ans: 2,
+    exp: "git reset --soft HEAD~1 undoes the last commit but keeps all your changes in the staging area (ready to be re-committed). HARD reset (--hard) deletes the changes permanently — use with extreme caution. 'git revert HEAD' creates a NEW commit that reverses the changes — it's the safest for shared/public branches because it doesn't rewrite history."
+  },
+  {
+    module: "🌿 Git & GitHub", moduleIdx: 2,
+    q: "What command is used to download a repository from GitHub to your local machine?",
+    code: null,
+    opts: ["A) git pull origin main", "B) git fetch --all", "C) git download <url>", "D) git clone <repository-url>"],
+    ans: 3,
+    exp: "git clone <url> downloads the entire repository including all branches and commit history to your local machine. It automatically sets up the remote 'origin' pointing to the GitHub URL. Use 'git pull' only when you already have a local copy and want to get the latest changes from the remote. Clone is a one-time setup; pull is ongoing updates."
+  },
+
+  // ==================== MODULE 4: DOCKER ====================
+  {
+    module: "🐳 Docker & Containerization", moduleIdx: 3,
+    q: "What problem does Docker fundamentally solve in software development?",
+    code: null,
+    opts: ["A) It makes applications run faster by using GPU acceleration", "B) It solves the 'Works on My Machine' problem by packaging apps with all their dependencies into portable containers", "C) It replaces the need for a programming language", "D) It provides cloud storage for your application code"],
+    ans: 1,
+    exp: "Docker solves the 'Works on My Machine' nightmare. Before Docker: 'The app works on my laptop but crashes on the server.' Docker packages your application, its libraries, runtime, and configuration into a single standardized container that runs identically everywhere — your laptop, CI/CD server, production cloud — regardless of the host OS."
+  },
+  {
+    module: "🐳 Docker & Containerization", moduleIdx: 3,
+    q: "What is the key difference between a Docker Image and a Docker Container?",
+    code: null,
+    opts: ["A) An image is running code; a container is a stored template", "B) An image is the read-only blueprint/template; a container is a live, running instance created from an image", "C) Images are stored in the cloud; containers run only on local machines", "D) There is no difference — they are the same thing"],
+    ans: 1,
+    exp: "Think of it like: Image = Blueprint/Recipe (static, read-only). Container = Running Instance built from that blueprint. One image can create many containers simultaneously. When you run 'docker run nginx', Docker takes the nginx image and starts a live container. Stopping the container doesn't destroy the image."
+  },
+  {
+    module: "🐳 Docker & Containerization", moduleIdx: 3,
+    q: "What does the <code>FROM</code> instruction do in a Dockerfile?",
+    code: "FROM node:18-alpine",
+    opts: ["A) It specifies the output destination for the built image", "B) It sets the working directory inside the container", "C) It defines the base image that all subsequent instructions build upon", "D) It installs Node.js version 18 on the host machine"],
+    ans: 2,
+    exp: "FROM is always the first instruction in any Dockerfile. It specifies the base image to start from — this is the foundation layer everything else is built on top of. 'node:18-alpine' means: use Node.js version 18 on the Alpine Linux base (Alpine is a tiny, 5MB Linux distro, perfect for containers). You must always start with FROM."
+  },
+  {
+    module: "🐳 Docker & Containerization", moduleIdx: 3,
+    q: "What does <code>docker run -d -p 8080:80 nginx</code> do?",
+    code: null,
+    opts: ["A) Runs nginx in interactive mode and maps port 8080 internally to 80 on host", "B) Stops nginx on port 8080 and redirects traffic to port 80", "C) Runs nginx in detached (background) mode and maps host port 8080 to container port 80", "D) Downloads nginx image version 8080 and runs it"],
+    ans: 2,
+    exp: "-d = Detached mode (runs in background, terminal is free). -p 8080:80 = Port mapping: Left side (8080) is the HOST port you access in your browser, Right side (80) is the port inside the container. So visiting localhost:8080 in your browser sends traffic to Nginx running on port 80 inside the container."
+  },
+  {
+    module: "🐳 Docker & Containerization", moduleIdx: 3,
+    q: "What is a Docker Volume and why is it critical in production?",
+    code: null,
+    opts: ["A) A virtual CPU allocated to a container", "B) A snapshot/backup of a Docker image", "C) A persistent storage mechanism that survives container deletion and enables data sharing", "D) A network bridge between two containers"],
+    ans: 2,
+    exp: "By default, container storage is ephemeral — all data inside a container is lost when the container is removed. Volumes solve this by mounting a persistent storage directory from the host (or Docker-managed storage) into the container. Critical for databases: without volumes, deleting the database container deletes ALL your data permanently."
+  },
+  {
+    module: "🐳 Docker & Containerization", moduleIdx: 3,
+    q: "What does <code>docker ps -a</code> show?",
+    code: null,
+    opts: ["A) Only currently running containers", "B) All containers regardless of state — running, stopped, and exited", "C) All Docker images on the system", "D) The process list of all services on the host machine"],
+    ans: 1,
+    exp: "'docker ps' shows only RUNNING containers. 'docker ps -a' shows ALL containers including stopped and exited ones. This is essential for debugging — if a container crashed, it won't appear in 'docker ps' but will show in 'docker ps -a' with its exit code, helping you understand what went wrong."
+  },
+  {
+    module: "🐳 Docker & Containerization", moduleIdx: 3,
+    q: "What is the purpose of <code>WORKDIR</code> in a Dockerfile?",
+    code: "WORKDIR /app\nCOPY . .\nRUN npm install",
+    opts: ["A) It specifies the directory on the HOST machine where the image is stored", "B) It sets the working directory INSIDE the container for all following RUN, COPY, and CMD instructions", "C) It creates a new user home directory called /app", "D) It mounts a volume at /app for persistent storage"],
+    ans: 1,
+    exp: "WORKDIR sets the current working directory inside the container for all subsequent instructions. If /app doesn't exist, Docker creates it automatically. Without WORKDIR, each instruction starts from / (root), which is messy and error-prone. After WORKDIR /app, the COPY command copies files into /app, and RUN commands execute from /app."
+  },
+  {
+    module: "🐳 Docker & Containerization", moduleIdx: 3,
+    q: "What is the key difference between Docker Compose and a Dockerfile?",
+    code: null,
+    opts: ["A) A Dockerfile runs multiple containers; Docker Compose runs a single container", "B) A Dockerfile defines HOW to build ONE image; Docker Compose defines HOW to run MULTIPLE containers together as a system", "C) Docker Compose is the newer version of Dockerfile", "D) A Dockerfile is written in YAML; Docker Compose is written in Python"],
+    ans: 1,
+    exp: "Dockerfile: Defines the recipe for building a SINGLE container image (base image, dependencies, code, startup command). Docker Compose (docker-compose.yml): Orchestrates MULTIPLE containers as a complete application stack. Example: your app needs a Node.js container + a MongoDB container + a Redis container. Compose starts them all, connects their networks, and manages their dependencies with a single 'docker-compose up' command."
+  },
+  {
+    module: "🐳 Docker & Containerization", moduleIdx: 3,
+    q: "How do you view the real-time logs of a running container named 'webapp'?",
+    code: null,
+    opts: ["A) docker status webapp --logs", "B) docker inspect webapp", "C) docker logs -f webapp", "D) docker exec webapp cat /logs"],
+    ans: 2,
+    exp: "'docker logs webapp' shows the existing logs of the container. Adding -f (follow) makes it stream live in real-time (like 'tail -f'). This is the first place DevOps engineers look when an application inside a container is behaving unexpectedly. Combined with 'docker exec -it webapp bash', you can also SSH into the container to debug directly."
+  },
+  {
+    module: "🐳 Docker & Containerization", moduleIdx: 3,
+    q: "What command do you run to remove all stopped containers AND unused images to free up disk space?",
+    code: null,
+    opts: ["A) docker rm -f all", "B) docker system prune -a", "C) docker delete --all unused", "D) docker clean --cache"],
+    ans: 1,
+    exp: "'docker system prune -a' is the 'nuclear clean' command. It removes: all stopped containers, all dangling (unused) images, all unused networks, all build cache. Use it carefully — it's irreversible. For a less aggressive clean: 'docker container prune' (stopped containers only) or 'docker image prune -a' (unused images only)."
+  },
+
+  // ==================== MODULE 5: CI/CD ====================
+  {
+    module: "⚙️ CI/CD Pipelines", moduleIdx: 4,
+    q: "What do the three acronyms stand for: CI, CD (Delivery), and CD (Deployment)?",
+    code: null,
+    opts: ["A) Code Integration, Code Delivery, Code Deployment", "B) Continuous Integration, Continuous Delivery, Continuous Deployment", "C) Container Infrastructure, Container Delivery, Container Deployment", "D) Continuous Inspection, Continuous Development, Continuous Distribution"],
+    ans: 1,
+    exp: "CI = Continuous Integration: Every code push triggers automated building and testing. CD (Delivery) = Continuous Delivery: Code is automatically built, tested, and ready to deploy with a manual approval gate before production. CD (Deployment) = Continuous Deployment: The fully automated final stage — code that passes all tests is automatically deployed to production without human intervention."
+  },
+  {
+    module: "⚙️ CI/CD Pipelines", moduleIdx: 4,
+    q: "Where must GitHub Actions workflow files be stored in your repository?",
+    code: null,
+    opts: ["A) In the root of the repository as a .workflow file", "B) In the /config directory as yaml files", "C) In .github/workflows/ as .yml files", "D) In the /scripts directory as shell scripts"],
+    ans: 2,
+    exp: "GitHub Actions automatically discovers workflow files placed in the .github/workflows/ directory of your repository. Each .yml file in this directory is a separate workflow (pipeline). GitHub scans this directory on every push/pull request and triggers the matching workflows based on the 'on:' triggers you define."
+  },
+  {
+    module: "⚙️ CI/CD Pipelines", moduleIdx: 4,
+    q: "In a GitHub Actions workflow, what does the <code>on: push: branches: [main]</code> trigger mean?",
+    code: "on:\n  push:\n    branches: [main]",
+    opts: ["A) Run this workflow every time ANY branch is updated", "B) Run this workflow ONLY when code is pushed (or merged) to the main branch", "C) Run this workflow when a pull request is opened against main", "D) Manually trigger the workflow when you push the run button"],
+    ans: 1,
+    exp: "This trigger means: 'Start this automated pipeline ONLY when a git push (or a merged pull request, which is also a push event) happens on the main branch.' This is the most common CI/CD pattern — protect your production pipeline by only triggering it on main, not on feature branches. For PR checks, you'd use 'on: pull_request' instead."
+  },
+  {
+    module: "⚙️ CI/CD Pipelines", moduleIdx: 4,
+    q: "In GitHub Actions, what is a 'runner' and what does 'runs-on: ubuntu-latest' mean?",
+    code: null,
+    opts: ["A) A runner is a Docker image; ubuntu-latest is the image version", "B) A runner is the virtual machine/server that executes the workflow steps; ubuntu-latest uses the latest GitHub-managed Ubuntu VM", "C) A runner is a GitHub employee who manually reviews and runs the workflow", "D) A runner is a cron job scheduler for the workflow"],
+    ans: 1,
+    exp: "A runner is the server/environment where your pipeline steps execute. GitHub provides free 'hosted runners' (GitHub-managed VMs). 'runs-on: ubuntu-latest' means: spin up a fresh Ubuntu Linux virtual machine for this job. The machine is created fresh, runs your steps, and is destroyed after the job completes. You can also use 'windows-latest' or 'macos-latest'."
+  },
+  {
+    module: "⚙️ CI/CD Pipelines", moduleIdx: 4,
+    q: "What is the purpose of <code>actions/checkout@v4</code> as a step in GitHub Actions?",
+    code: "- uses: actions/checkout@v4",
+    opts: ["A) It logs into GitHub with your personal access token", "B) It checks if the workflow has any syntax errors before running", "C) It clones your repository code onto the runner machine so subsequent steps can access it", "D) It creates a checkout branch for the CI process"],
+    ans: 2,
+    exp: "By default, the GitHub Actions runner is a bare, empty Ubuntu VM. It has no access to your code. 'actions/checkout@v4' is the official GitHub Action that clones your repository code onto the runner. Without this step, any commands like 'npm install' or 'docker build' would fail because there's no code to work with. This is almost always the first step in any workflow."
+  },
+  {
+    module: "⚙️ CI/CD Pipelines", moduleIdx: 4,
+    q: "What is the correct sequence of steps in a typical Docker-based CI/CD pipeline triggered by a push to main?",
+    code: null,
+    opts: [
+      "A) Deploy → Build → Test → Push",
+      "B) Push code → Checkout → Build Docker image → Run tests → Push to registry → Deploy to server",
+      "C) Pull from registry → Build → Test → Push code to GitHub",
+      "D) Test → Build → Clone repository → Deploy"
+    ],
+    ans: 1,
+    exp: "The correct CI/CD flow: 1) Developer pushes code to GitHub main. 2) GitHub Actions runner triggers. 3) Checkout step clones the code. 4) Docker Build: 'docker build -t app .' creates the image. 5) Tests run against the new image. 6) If tests pass, push image to a registry (DockerHub / GitHub Container Registry). 7) Deploy to production server (pull new image, restart container). Every step is automated."
+  },
+  {
+    module: "⚙️ CI/CD Pipelines", moduleIdx: 4,
+    q: "In GitHub Actions, how do you securely store and use sensitive credentials like passwords or API keys?",
+    code: "env:\n  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}",
+    opts: ["A) Write them directly into the .yml workflow file in plain text", "B) Store them in a .env file and commit it to the repository", "C) Store them in GitHub Repository Secrets and reference them with ${{ secrets.SECRET_NAME }} in workflows", "D) Encrypt them with base64 and store in the workflow file"],
+    ans: 2,
+    exp: "GitHub Secrets are encrypted environment variables stored securely in your GitHub repository settings (Settings → Secrets and Variables → Actions). They are NEVER visible in logs or to other users. You reference them in workflows using ${{ secrets.SECRET_NAME }}. NEVER write passwords in plain text in your workflow file or commit .env files — this is a critical security rule."
+  },
+  {
+    module: "⚙️ CI/CD Pipelines", moduleIdx: 4,
+    q: "What is the main advantage of a CI/CD pipeline over manual deployment?",
+    code: null,
+    opts: ["A) CI/CD pipelines are slower but more reliable than manual deployment", "B) CI/CD pipelines eliminate the need for writing tests", "C) CI/CD provides speed, consistency, and reliability — code is tested and deployed automatically with zero human error", "D) CI/CD only works for small applications, not enterprise software"],
+    ans: 2,
+    exp: "CI/CD transforms software delivery: Speed — deployments that took days now happen in minutes. Consistency — every deployment follows the exact same steps, eliminating 'it worked when I deployed manually' issues. Reliability — tests catch bugs before they reach production. Frequency — teams can deploy dozens of times per day safely. This is the core philosophy of modern DevOps."
+  },
+  {
+    module: "⚙️ CI/CD Pipelines", moduleIdx: 4,
+    q: "In a GitHub Actions workflow for Docker, what does this step accomplish?",
+    code: "- name: Build Docker Image\n  run: docker build -t myapp:${{ github.sha }} .",
+    opts: ["A) It pulls a Docker image tagged with the commit hash from DockerHub", "B) It builds a Docker image from the Dockerfile and tags it with the unique Git commit SHA", "C) It deletes the previous Docker image version", "D) It runs the container and maps it to a random port"],
+    ans: 1,
+    exp: "'docker build -t myapp:${{ github.sha }} .' builds a Docker image from the Dockerfile in the current directory. '${{ github.sha }}' is a GitHub Actions context variable that contains the full SHA hash of the triggering commit (e.g., 'a1b2c3d...'). Tagging images with the commit SHA is a best practice — it creates a unique, traceable tag for every deployment, enabling easy rollbacks."
+  },
+  {
+    module: "⚙️ CI/CD Pipelines", moduleIdx: 4,
+    q: "What distinguishes 'Continuous Delivery' from 'Continuous Deployment'?",
+    code: null,
+    opts: ["A) Continuous Delivery uses Docker; Continuous Deployment does not", "B) Continuous Delivery has a manual approval gate before production; Continuous Deployment deploys automatically with no human intervention", "C) Continuous Deployment only works with Jenkins; Continuous Delivery works with all tools", "D) There is no difference — both terms mean the same thing"],
+    ans: 1,
+    exp: "This is a common interview question! Continuous Delivery: Code is automatically built and tested, reaching a 'ready-to-deploy' state. A human approves the final push to production. Continuous Deployment: Fully automated end-to-end — code that passes all automated tests is deployed to production automatically with NO human in the loop. Most organizations use Continuous Delivery for safety."
+  }
+];
+
+let currentQ = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let timerInterval = null;
+let secondsLeft = 60 * 60;
+let examStarted = false;
+const moduleNames = ["🐧 Linux", "🌐 Networking", "🌿 Git & GitHub", "🐳 Docker", "⚙️ CI/CD"];
+const moduleColors = ["#3b82f6","#10b981","#f59e0b","#06b6d4","#8b5cf6"];
+
+function startExam() {
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('exam').style.display = 'block';
+  examStarted = true;
+  buildGrid();
+  renderQ();
+  startTimer();
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m = Math.floor(secondsLeft / 60);
+    const s = secondsLeft % 60;
+    const box = document.getElementById('timerBox');
+    box.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (secondsLeft <= 300 && secondsLeft > 60) { box.className = 'timer-box warning'; }
+    else if (secondsLeft <= 60) { box.className = 'timer-box danger'; }
+    if (secondsLeft <= 0) { clearInterval(timerInterval); submitExam(); }
+  }, 1000);
+}
+
+function buildGrid() {
+  const grid = document.getElementById('qGrid');
+  grid.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'q-dot' + (i === currentQ ? ' current' : ' unanswered');
+    dot.textContent = i + 1;
+    dot.id = `dot-${i}`;
+    dot.onclick = () => { currentQ = i; renderQ(); };
+    grid.appendChild(dot);
+  });
+}
+
+function renderQ() {
+  const q = QUESTIONS[currentQ];
+  document.getElementById('moduleBadge').textContent = q.module;
+  document.getElementById('qNumber').textContent = `Question ${currentQ + 1} of ${QUESTIONS.length}`;
+  document.getElementById('qText').innerHTML = q.q;
+
+  const codeEl = document.getElementById('qCode');
+  if (q.code) { codeEl.style.display = 'block'; codeEl.textContent = q.code; }
+  else { codeEl.style.display = 'none'; }
+
+  const opts = document.getElementById('optionsContainer');
+  opts.innerHTML = '';
+  const labels = ['A','B','C','D'];
+  q.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option' + (answers[currentQ] !== null ? ' answered' : '');
+    div.innerHTML = `<div class="opt-label">${labels[i]}</div><div class="opt-text">${opt.replace(/^[A-D]\) /,'')}</div>`;
+    if (answers[currentQ] !== null) {
+      if (i === q.ans) div.classList.add('correct');
+      else if (i === answers[currentQ] && i !== q.ans) div.classList.add('wrong');
+    }
+    div.onclick = () => selectAnswer(i);
+    opts.appendChild(div);
+  });
+
+  const expEl = document.getElementById('explanation');
+  if (answers[currentQ] !== null) {
+    expEl.style.display = 'block';
+    const correct = answers[currentQ] === q.ans;
+    expEl.className = correct ? 'explanation' : 'explanation wrong-exp';
+    const head = document.getElementById('expHead');
+    head.className = correct ? 'exp-head correct-head' : 'exp-head wrong-head';
+    head.innerHTML = correct ? '✅ Correct!' : `❌ Incorrect — The correct answer was: ${labels[q.ans]}`;
+    document.getElementById('expText').textContent = q.exp;
+  } else {
+    expEl.style.display = 'none';
+  }
+
+  document.getElementById('prevBtn').disabled = currentQ === 0;
+  document.getElementById('nextBtn').style.display = currentQ < QUESTIONS.length - 1 ? 'block' : 'none';
+  document.getElementById('submitBtn').style.display = currentQ === QUESTIONS.length - 1 ? 'block' : 'none';
+
+  // Update progress
+  const answered = answers.filter(a => a !== null).length;
+  const pct = (answered / QUESTIONS.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `${answered} / ${QUESTIONS.length}`;
+
+  // Update grid dots
+  QUESTIONS.forEach((q2, i) => {
+    const dot = document.getElementById(`dot-${i}`);
+    if (!dot) return;
+    dot.className = 'q-dot';
+    if (i === currentQ) dot.classList.add('current');
+    else if (answers[i] !== null) {
+      if (answers[i] === q2.ans) dot.classList.add('answered-c');
+      else dot.classList.add('answered-w');
+    } else dot.classList.add('unanswered');
+  });
+}
+
+function selectAnswer(idx) {
+  if (answers[currentQ] !== null) return;
+  answers[currentQ] = idx;
+  renderQ();
+}
+
+function changeQ(dir) {
+  currentQ += dir;
+  if (currentQ < 0) currentQ = 0;
+  if (currentQ >= QUESTIONS.length) currentQ = QUESTIONS.length - 1;
+  renderQ();
+}
+
+function submitExam() {
+  clearInterval(timerInterval);
+  document.getElementById('exam').style.display = 'none';
+  const resultsEl = document.getElementById('results');
+  resultsEl.style.display = 'block';
+
+  let correct = 0;
+  const moduleScores = [0,0,0,0,0];
+  const moduleTotals = [0,0,0,0,0];
+  QUESTIONS.forEach((q, i) => {
+    moduleTotals[q.moduleIdx]++;
+    if (answers[i] === q.ans) { correct++; moduleScores[q.moduleIdx]++; }
+  });
+
+  const pct = Math.round((correct / QUESTIONS.length) * 100);
+  const wrong = QUESTIONS.filter((q,i) => answers[i] !== null && answers[i] !== q.ans).length;
+  const unanswered = answers.filter(a => a === null).length;
+
+  let grade, gradeColor;
+  if (pct >= 90) { grade = 'Excellent! 🏆'; gradeColor = '#10b981'; }
+  else if (pct >= 75) { grade = 'Good Job! 👍'; gradeColor = '#3b82f6'; }
+  else if (pct >= 60) { grade = 'Keep Practicing! 💪'; gradeColor = '#f59e0b'; }
+  else { grade = 'Needs More Study 📚'; gradeColor = '#ef4444'; }
+
+  const circumference = 2 * Math.PI * 60;
+  const dashOffset = circumference - (pct / 100) * circumference;
+
+  resultsEl.innerHTML = `
+    <div class="result-hero">
+      <div class="score-ring-wrap">
+        <svg class="score-circle" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="60" fill="none" stroke="#1e2d45" stroke-width="12"/>
+          <circle cx="70" cy="70" r="60" fill="none" stroke="${gradeColor}" stroke-width="12"
+            stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}"
+            stroke-linecap="round" transform="rotate(-90 70 70)"
+            style="transition: stroke-dashoffset 1.5s ease"/>
+        </svg>
+        <div class="score-center">
+          <div class="score-pct" style="color:${gradeColor}">${pct}%</div>
+          <div class="score-lbl">${correct}/${QUESTIONS.length}</div>
+        </div>
+      </div>
+      <h2>${grade}</h2>
+      <p>Meander Software Pvt Ltd · DevOps Comprehensive Exam</p>
+    </div>
+    <div class="result-stats">
+      <div class="result-stat"><div class="num green">${correct}</div><div class="lbl">Correct</div></div>
+      <div class="result-stat"><div class="num red">${wrong}</div><div class="lbl">Incorrect</div></div>
+      <div class="result-stat"><div class="num yellow">${unanswered}</div><div class="lbl">Unanswered</div></div>
+      <div class="result-stat"><div class="num blue">${pct}%</div><div class="lbl">Score</div></div>
+    </div>
+    <div class="module-results">
+      <h3>Module Breakdown</h3>
+      ${moduleNames.map((name, i) => {
+        const score = moduleScores[i]; const total = moduleTotals[i];
+        const mpct = Math.round((score/total)*100);
+        return `<div class="mod-result-row">
+          <div class="mod-result-name">${name}</div>
+          <div class="mod-result-bar-wrap"><div class="mod-result-bar" style="width:${mpct}%;background:${moduleColors[i]}"></div></div>
+          <div class="mod-result-score">${score}/${total} (${mpct}%)</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="review-section">
+      <h3>Answer Review</h3>
+      ${QUESTIONS.map((q, i) => {
+        if (answers[i] === null) return '';
+        const isCorrect = answers[i] === q.ans;
+        const labels = ['A','B','C','D'];
+        return `<div class="review-item ${isCorrect ? 'r-correct' : 'r-wrong'}">
+          <div class="q-review-num" style="font-size:0.75rem;color:var(--text-muted);margin-bottom:6px">Q${i+1} · ${q.module}</div>
+          <div class="review-q">${q.q.replace(/<[^>]+>/g, '')}</div>
+          ${!isCorrect ? `<div class="review-row"><span class="tag tag-your">Your Answer: ${labels[answers[i]]}</span> <span class="tag tag-correct-ans">Correct: ${labels[q.ans]}</span></div>` : '<div class="review-row"><span class="tag tag-good">✓ Correct</span></div>'}
+          <div class="review-exp">${q.exp}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="result-actions">
+      <button class="action-btn primary" onclick="location.reload()">🔄 Retake Exam</button>
+      <button class="action-btn secondary" onclick="window.print()">🖨️ Print Results</button>
+    </div>
+  `;
+}
+</script>
+
+<!-- ═══════════════════════════════════════════════════
+     INSTRUCTOR PROFILE CARD — Injected automatically
+═══════════════════════════════════════════════════ -->
+<div id="instructor-card" style="
+  font-family:'Segoe UI',Roboto,Inter,sans-serif;
+  max-width:860px; margin:40px auto 0; padding:0 24px 40px;
+">
+  <div style="
+    background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);
+    border:1px solid #334155; border-radius:16px; padding:28px 32px;
+    display:flex; align-items:center; gap:28px; flex-wrap:wrap;
+    box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  ">
+    <!-- Avatar -->
+    <div style="
+      width:70px;height:70px;border-radius:50%;
+      background:linear-gradient(135deg,#3b82f6,#8b5cf6);
+      display:flex;align-items:center;justify-content:center;
+      font-size:2rem;flex-shrink:0;
+    ">⚙️</div>
+
+    <!-- Info -->
+    <div style="flex:1;min-width:200px;">
+      <div style="font-size:.72rem;color:#64748b;font-weight:700;
+        text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">
+        Your Instructor
+      </div>
+      <div style="font-size:1.3rem;font-weight:800;color:#f1f5f9;
+        margin-bottom:2px;">
+        Kuldeep Singh
+      </div>
+      <div style="font-size:.88rem;color:#94a3b8;font-weight:500;">
+        DevOps Engineer &amp; Trainer · Meander Software Pvt Ltd
+      </div>
+    </div>
+
+    <!-- Links -->
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <a href="https://www.linkedin.com/in/kuldeep-engineer/"
+         target="_blank" rel="noopener"
+         style="display:inline-flex;align-items:center;gap:8px;
+           background:#0a66c2;color:#fff;text-decoration:none;
+           padding:10px 20px;border-radius:10px;font-size:.85rem;
+           font-weight:700;transition:opacity .15s;"
+         onmouseover="this.style.opacity='.85'"
+         onmouseout="this.style.opacity='1'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        </svg>
+        LinkedIn
+      </a>
+      <a href="https://github.com/developer-kuldeep"
+         target="_blank" rel="noopener"
+         style="display:inline-flex;align-items:center;gap:8px;
+           background:#24292e;color:#fff;text-decoration:none;
+           padding:10px 20px;border-radius:10px;font-size:.85rem;
+           font-weight:700;border:1px solid #444;transition:opacity .15s;"
+         onmouseover="this.style.opacity='.85'"
+         onmouseout="this.style.opacity='1'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+        </svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</div>
+<!-- ═══════════════════════════════════════════════════ -->
+
+</body>
+</html>
